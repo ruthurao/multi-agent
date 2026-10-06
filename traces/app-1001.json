@@ -1,0 +1,101 @@
+[
+  {
+    "agent": "supervisor",
+    "input": "APP-1001",
+    "output": "next=intake",
+    "duration_ms": 0.02458400558680296,
+    "tokens": {
+      "input": 46,
+      "output": 13,
+      "total": 59
+    }
+  },
+  {
+    "agent": "intake",
+    "input": "APP-1001",
+    "output": "complete",
+    "duration_ms": 0.010541989468038082,
+    "tokens": {
+      "input": 32,
+      "output": 5,
+      "total": 37
+    }
+  },
+  {
+    "agent": "supervisor",
+    "input": "APP-1001",
+    "output": "next=enrichment",
+    "duration_ms": 0.029165996238589287,
+    "tokens": {
+      "input": 75,
+      "output": 15,
+      "total": 90
+    }
+  },
+  {
+    "agent": "enrichment",
+    "input": "APP-1001",
+    "output": "excellent",
+    "duration_ms": 0.01154094934463501,
+    "tokens": {
+      "input": 74,
+      "output": 6,
+      "total": 80
+    }
+  },
+  {
+    "agent": "supervisor",
+    "input": "APP-1001",
+    "output": "next=risk_scoring",
+    "duration_ms": 0.018291990272700787,
+    "tokens": {
+      "input": 141,
+      "output": 16,
+      "total": 157
+    }
+  },
+  {
+    "agent": "risk_scoring",
+    "input": "APP-1001",
+    "output": "13 low",
+    "duration_ms": 0.010582967661321163,
+    "tokens": {
+      "input": 89,
+      "output": 7,
+      "total": 96
+    }
+  },
+  {
+    "agent": "supervisor",
+    "input": "APP-1001",
+    "output": "next=recommendation",
+    "duration_ms": 0.01979200169444084,
+    "tokens": {
+      "input": 162,
+      "output": 17,
+      "total": 179
+    }
+  },
+  {
+    "agent": "recommendation",
+    "input": "APP-1001",
+    "output": "approve",
+    "duration_ms": 0.00700005330145359,
+    "tokens": {
+      "input": 31,
+      "output": 7,
+      "total": 38
+    }
+  },
+  {
+    "agent": "supervisor",
+    "input": "APP-1001",
+    "output": "next=end",
+    "duration_ms": 0.02054101787507534,
+    "tokens": {
+      "input": 182,
+      "output": 12,
+      "total": 194
+    }
+  }
+]

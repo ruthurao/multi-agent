@@ -5,10 +5,13 @@ import os
 class LLM:
     def complete(self, agent, system, user):
         if os.environ.get("ANTHROPIC_API_KEY"):
-            return _remote("anthropic", system, user)
-        if os.environ.get("OPENAI_API_KEY"):
-            return _remote("openai", system, user)
-        return _local(agent, system, user)
+            result = _remote("anthropic", system, user)
+        elif os.environ.get("OPENAI_API_KEY"):
+            result = _remote("openai", system, user)
+        else:
+            result = _local(agent, system, user)
+        self.last_usage = result["usage"]
+        return result
 
 
 def _tokens(text):

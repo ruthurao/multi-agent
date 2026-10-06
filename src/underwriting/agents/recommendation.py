@@ -1,19 +1,10 @@
 import json
 
-
-def _usable(score):
-    if not isinstance(score, dict):
-        return False
-    value = score.get("score")
-    if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= 100:
-        return False
-    if score.get("band") not in ("low", "moderate", "high", "severe"):
-        return False
-    return isinstance(score.get("factors"), list) and bool(score["factors"])
+from underwriting.state import usable_score
 
 
 def recommendation_agent(score, fact_summary, llm):
-    if not _usable(score):
+    if not usable_score(score):
         raise ValueError("a usable score is required")
     llm.complete(
         "recommendation",
