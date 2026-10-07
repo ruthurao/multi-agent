@@ -145,3 +145,86 @@ def build_graph(llm, clock, db_path):
     for name in ("intake", "enrichment", "risk_scoring", "recommendation"):
         graph.add_edge(name, "supervisor")
     return graph.compile()
+
+
+def write_graph_page(path="graph.html") -> str:
+    edges = list(build_graph(None, None, None).get_graph().edges)
+    labels = {
+        "__start__": "start",
+        "__end__": "end",
+        "supervisor": "supervisor",
+        "intake": "intake",
+        "enrichment": "enrichment",
+        "risk_scoring": "risk scoring",
+        "recommendation": "recommendation",
+    }
+    spots = {
+        "__start__": (450, 56),
+        "supervisor": (450, 168),
+        "intake": (110, 340),
+        "enrichment": (300, 340),
+        "risk_scoring": (510, 340),
+        "recommendation": (740, 340),
+        "__end__": (450, 470),
+    }
+    boxes = []
+    for node, (x, y) in spots.items():
+        boxes.append(
+            f'<rect x="{x - 78}" y="{y - 22}" width="156" height="44" rx="8" fill="#ffffff" stroke="#111111"/>'
+            f'<text x="{x}" y="{y + 5}" text-anchor="middle" font-size="15">{labels[node]}</text>'
+        )
+    lines = []
+    for edge in edges:
+        x1, y1 = spots[edge.source]
+        x2, y2 = spots[edge.target]
+        if edge.conditional and edge.target != "__end__":
+            lines.append(
+                f'<path d="M {x1} {y1 + 22} C {x1} {y1 + 70}, {x2} {y2 - 70}, {x2} {y2 - 22}" fill="none" stroke="#111111" stroke-dasharray="5 4" marker-end="url(#arrow)"/>'
+            )
+        elif edge.conditional:
+            lines.append(
+                f'<path d="M {x1 + 90} {y1} C {x1 + 160} {y1}, {x2 + 160} {y2}, {x2 + 78} {y2}" fill="none" stroke="#111111" stroke-dasharray="5 4" marker-end="url(#arrow)"/>'
+            )
+        elif edge.source == "__start__":
+            lines.append(
+                f'<path d="M {x1} {y1 + 22} L {x2} {y2 - 22}" fill="none" stroke="#111111" marker-end="url(#arrow)"/>'
+            )
+        else:
+            lines.append(
+                f'<path d="M {x1} {y1 - 22} C {x1} {y1 - 80}, {x2 - 90} {y2 + 40}, {x2 - 78} {y2}" fill="none" stroke="#555555" marker-end="url(#arrow)"/>'
+            )
+    page = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Underwriting graph</title>
+  <style>
+    html, body {{ background: #ffffff; color: #111111; }}
+    body {{ font-family: system-ui, sans-serif; margin: 2rem; }}
+    h1 {{ font-size: 1.25rem; font-weight: 500; }}
+  </style>
+</head>
+<body>
+  <h1>Underwriting graph</h1>
+  <p>Dashed arrows are the supervisor choice. Gray arrows return to the supervisor.</p>
+  <svg viewBox="0 0 900 530" width="100%" style="max-width:900px;height:auto" role="img" aria-label="Underwriting LangGraph">
+    <defs>
+      <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+        <path d="M0,0 L8,4 L0,8 Z" fill="#111111"/>
+      </marker>
+    </defs>
+    {''.join(lines)}
+    {''.join(boxes)}
+  </svg>
+</body>
+</html>
+"""
+    from pathlib import Path
+
+    target = Path(path)
+    target.write_text(page)
+    return str(target.resolve())
+
+
+if __name__ == "__main__":
+    print(write_graph_page())

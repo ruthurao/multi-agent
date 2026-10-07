@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Underwriting graph</title>
+  <style>
+    html, body { background: #ffffff; color: #111111; }
+    body { font-family: system-ui, sans-serif; margin: 2rem; }
+    h1 { font-size: 1.25rem; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <h1>Underwriting graph</h1>
+  <p>Dashed arrows are the supervisor choice. Gray arrows return to the supervisor.</p>
+  <svg viewBox="0 0 900 530" width="100%" style="max-width:900px;height:auto" role="img" aria-label="Underwriting LangGraph">
+    <defs>
+      <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+        <path d="M0,0 L8,4 L0,8 Z" fill="#111111"/>
+      </marker>
+    </defs>
+    <path d="M 450 78 L 450 146" fill="none" stroke="#111111" marker-end="url(#arrow)"/><path d="M 300 318 C 300 260, 360 208, 372 168" fill="none" stroke="#555555" marker-end="url(#arrow)"/><path d="M 110 318 C 110 260, 360 208, 372 168" fill="none" stroke="#555555" marker-end="url(#arrow)"/><path d="M 740 318 C 740 260, 360 208, 372 168" fill="none" stroke="#555555" marker-end="url(#arrow)"/><path d="M 510 318 C 510 260, 360 208, 372 168" fill="none" stroke="#555555" marker-end="url(#arrow)"/><path d="M 540 168 C 610 168, 610 470, 528 470" fill="none" stroke="#111111" stroke-dasharray="5 4" marker-end="url(#arrow)"/><path d="M 450 190 C 450 238, 300 270, 300 318" fill="none" stroke="#111111" stroke-dasharray="5 4" marker-end="url(#arrow)"/><path d="M 450 190 C 450 238, 110 270, 110 318" fill="none" stroke="#111111" stroke-dasharray="5 4" marker-end="url(#arrow)"/><path d="M 450 190 C 450 238, 740 270, 740 318" fill="none" stroke="#111111" stroke-dasharray="5 4" marker-end="url(#arrow)"/><path d="M 450 190 C 450 238, 510 270, 510 318" fill="none" stroke="#111111" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+    <rect x="372" y="34" width="156" height="44" rx="8" fill="#ffffff" stroke="#111111"/><text x="450" y="61" text-anchor="middle" font-size="15">start</text><rect x="372" y="146" width="156" height="44" rx="8" fill="#ffffff" stroke="#111111"/><text x="450" y="173" text-anchor="middle" font-size="15">supervisor</text><rect x="32" y="318" width="156" height="44" rx="8" fill="#ffffff" stroke="#111111"/><text x="110" y="345" text-anchor="middle" font-size="15">intake</text><rect x="222" y="318" width="156" height="44" rx="8" fill="#ffffff" stroke="#111111"/><text x="300" y="345" text-anchor="middle" font-size="15">enrichment</text><rect x="432" y="318" width="156" height="44" rx="8" fill="#ffffff" stroke="#111111"/><text x="510" y="345" text-anchor="middle" font-size="15">risk scoring</text><rect x="662" y="318" width="156" height="44" rx="8" fill="#ffffff" stroke="#111111"/><text x="740" y="345" text-anchor="middle" font-size="15">recommendation</text><rect x="372" y="448" width="156" height="44" rx="8" fill="#ffffff" stroke="#111111"/><text x="450" y="475" text-anchor="middle" font-size="15">end</text>
+  </svg>
+</body>
+</html>
