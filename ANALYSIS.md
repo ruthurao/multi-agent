@@ -11,3 +11,5 @@ Price assumption: Claude Sonnet, $2 per million input tokens, $10 per million ou
 | APP-1003 | deny | 903 | 237 | 1140 | 0.1372491242364049 | $0.004176 |
 
 ## Verdict
+
+Overnight batch. A case costs about $0.0038 to $0.0042 at the Claude Sonnet price above, which is cheap enough for a live quote or a nightly run. The durations in the table are local function time, under a millisecond, from the built-in model with no network call. A happy path makes nine model calls in sequence: five supervisor turns and one each for intake, enrichment, risk scoring, and recommendation. A live model round-trip of a few hundred milliseconds makes that several seconds, and a risk timeout adds another 1.5 seconds of backoff before human review. That wait fits an overnight batch. It is too slow for a decision while the applicant is waiting.
