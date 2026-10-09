@@ -23,6 +23,11 @@ def test_happy_paths():
         for item in events:
             assert FIELDS <= item.keys()
             assert set(item["tokens"]) == {"input", "output", "total"}
+            if item["agent"] != "retry_backoff":
+                assert isinstance(item["input"], dict)
+        recommendation = next(item for item in events if item["agent"] == "recommendation")
+        assert recommendation["input"]["score"] == case["risk_score"]["score"]
+        assert recommendation["output"]["decision"] == decision
 
 
 def test_missing_product_is_invalid():

@@ -10,7 +10,7 @@ from underwriting.agents.recommendation import recommendation_agent
 from underwriting.agents.risk import risk_scoring_agent
 from underwriting.agents.supervisor import supervisor_turn
 from underwriting.db import load_checkpoint, save_case, save_checkpoint
-from underwriting.tracing import event
+from underwriting.tracing import event, prompt
 
 
 class Case(TypedDict, total=False):
@@ -69,7 +69,15 @@ def build_graph(llm, clock, db_path):
             backoff["duration_ms"] = wait * 1000
             extra.append(backoff)
         traced = list(state.get("trace") or []) + extra
-        traced.append(event("supervisor", state["id"], f"next={nxt}", started, reply["usage"]))
+        traced.append(
+            event(
+                "supervisor",
+                prompt(llm),
+                {"next_agent": nxt, "reasoning": state.get("reasoning")},
+                started,
+                reply["usage"],
+            )
+        )
         return {
             "raw_application": state.get("raw_application"),
             "profile": state.get("profile"),
@@ -88,15 +96,14 @@ def build_graph(llm, clock, db_path):
     def intake(state):
         started = time.perf_counter()
         profile = intake_agent(state["raw_application"], llm)
-        label = "complete" if profile["complete"] else "incomplete"
-        traced = state["trace"] + [event("intake", state["id"], label, started, llm.last_usage)]
+        traced = state["trace"] + [event("intake", prompt(llm), profile, started, llm.last_usage)]
         _checkpoint(state, "intake", db_path, profile=profile, trace=traced)
         return {"profile": profile, "trace": traced}
 
     def enrichment(state):
         started = time.perf_counter()
         found = enrichment_agent(state["profile"], llm, lookups)
-        traced = state["trace"] + [event("enrichment", state["id"], found["credit"]["band"], started, llm.last_usage)]
+        traced = state["trace"] + [event("enrichment", prompt(llm), found, started, llm.last_usage)]
         _checkpoint(state, "enrichment", db_path, enrichment=found, trace=traced)
         return {"enrichment": found, "trace": traced}
 
@@ -105,14 +112,14 @@ def build_graph(llm, clock, db_path):
         try:
             score = risk_scoring_agent(state["profile"], state["enrichment"], llm)
         except TimeoutError as exc:
-            traced = state["trace"] + [event("risk_scoring", state["id"], "timeout", started)]
+            traced = state["trace"] + [event("risk_scoring", prompt(llm), "timeout", started)]
             return {
                 "risk_score": None,
                 "risk_attempts": (state.get("risk_attempts") or 0) + 1,
                 "last_error": str(exc),
                 "trace": traced,
             }
-        traced = state["trace"] + [event("risk_scoring", state["id"], f"{score['score']} {score['band']}", started, llm.last_usage)]
+        traced = state["trace"] + [event("risk_scoring", prompt(llm), score, started, llm.last_usage)]
         _checkpoint(state, "risk_scoring", db_path, risk_score=score, trace=traced)
         return {"risk_score": score, "trace": traced}
 
@@ -120,7 +127,7 @@ def build_graph(llm, clock, db_path):
         started = time.perf_counter()
         summary = (state.get("enrichment") or {}).get("summary") or ""
         result = recommendation_agent(state["risk_score"], summary, llm)
-        traced = state["trace"] + [event("recommendation", state["id"], result["decision"], started, llm.last_usage)]
+        traced = state["trace"] + [event("recommendation", prompt(llm), result, started, llm.last_usage)]
         _checkpoint(state, "recommendation", db_path, recommendation=result, trace=traced)
         return {"recommendation": result, "trace": traced}
 

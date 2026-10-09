@@ -6,8 +6,8 @@ Price assumption: Claude Sonnet, $2 per million input tokens, $10 per million ou
 
 | Case | Decision | Input tokens | Output tokens | Total tokens | Duration (ms) | Cost |
 | --- | --- | --- | --- | --- | --- | --- |
-| APP-1001 | approve | 832 | 98 | 930 | 0.15204097144305706 | $0.002644 |
-| APP-1002 | refer | 833 | 98 | 931 | 0.1384170027449727 | $0.002646 |
-| APP-1003 | deny | 880 | 98 | 978 | 0.09116681758314371 | $0.002740 |
+| APP-1001 | approve | 837 | 211 | 1048 | 0.16495690215379 | $0.003784 |
+| APP-1002 | refer | 838 | 213 | 1051 | 0.14612404629588127 | $0.003806 |
+| APP-1003 | deny | 903 | 237 | 1140 | 0.1480431528761983 | $0.004176 |
 
 ## Verdict

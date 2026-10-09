@@ -1,9 +1,20 @@
 [
   {
     "agent": "supervisor",
-    "input": "APP-1001",
-    "output": "next=intake",
-    "duration_ms": 0.02458400558680296,
+    "input": {
+      "status": "in_progress",
+      "profile": null,
+      "enrichment": null,
+      "risk_score": null,
+      "recommendation": null,
+      "risk_attempts": 0,
+      "last_error": null
+    },
+    "output": {
+      "next_agent": "intake",
+      "reasoning": "next is intake"
+    },
+    "duration_ms": 0.013040960766375065,
     "tokens": {
       "input": 46,
       "output": 13,
@@ -12,20 +23,47 @@
   },
   {
     "agent": "intake",
-    "input": "APP-1001",
-    "output": "complete",
-    "duration_ms": 0.010541989468038082,
+    "input": {
+      "applicant_id": "APP-1001",
+      "full_name": "Alice Chen",
+      "product": "homeowners"
+    },
+    "output": {
+      "complete": true,
+      "missing_fields": [],
+      "applicant_id": "APP-1001",
+      "full_name": "Alice Chen",
+      "product": "homeowners"
+    },
+    "duration_ms": 0.010375049896538258,
     "tokens": {
       "input": 32,
-      "output": 5,
-      "total": 37
+      "output": 30,
+      "total": 62
     }
   },
   {
     "agent": "supervisor",
-    "input": "APP-1001",
-    "output": "next=enrichment",
-    "duration_ms": 0.029165996238589287,
+    "input": {
+      "status": "in_progress",
+      "profile": {
+        "complete": true,
+        "missing_fields": [],
+        "applicant_id": "APP-1001",
+        "full_name": "Alice Chen",
+        "product": "homeowners"
+      },
+      "enrichment": null,
+      "risk_score": null,
+      "recommendation": null,
+      "risk_attempts": 0,
+      "last_error": null
+    },
+    "output": {
+      "next_agent": "enrichment",
+      "reasoning": "next is enrichment"
+    },
+    "duration_ms": 0.011750031262636185,
     "tokens": {
       "input": 75,
       "output": 15,
@@ -34,20 +72,88 @@
   },
   {
     "agent": "enrichment",
-    "input": "APP-1001",
-    "output": "excellent",
-    "duration_ms": 0.01154094934463501,
+    "input": {
+      "applicant_id": "APP-1001",
+      "claims": {
+        "at_fault": 0,
+        "not_at_fault": 0,
+        "total_loss": false,
+        "dui_related": false
+      },
+      "credit": {
+        "band": "excellent"
+      },
+      "assets": {
+        "flood_zone": "X",
+        "roof_year": 2019,
+        "unpermitted_structure": false,
+        "prior_damage": false
+      }
+    },
+    "output": {
+      "claims": {
+        "at_fault": 0,
+        "not_at_fault": 0,
+        "total_loss": false,
+        "dui_related": false
+      },
+      "credit": {
+        "band": "excellent"
+      },
+      "assets": {
+        "flood_zone": "X",
+        "roof_year": 2019,
+        "unpermitted_structure": false,
+        "prior_damage": false
+      },
+      "summary": "credit excellent, at_fault 0"
+    },
+    "duration_ms": 0.01425005029886961,
     "tokens": {
       "input": 74,
-      "output": 6,
-      "total": 80
+      "output": 67,
+      "total": 141
     }
   },
   {
     "agent": "supervisor",
-    "input": "APP-1001",
-    "output": "next=risk_scoring",
-    "duration_ms": 0.018291990272700787,
+    "input": {
+      "status": "in_progress",
+      "profile": {
+        "complete": true,
+        "missing_fields": [],
+        "applicant_id": "APP-1001",
+        "full_name": "Alice Chen",
+        "product": "homeowners"
+      },
+      "enrichment": {
+        "claims": {
+          "at_fault": 0,
+          "not_at_fault": 0,
+          "total_loss": false,
+          "dui_related": false
+        },
+        "credit": {
+          "band": "excellent"
+        },
+        "assets": {
+          "flood_zone": "X",
+          "roof_year": 2019,
+          "unpermitted_structure": false,
+          "prior_damage": false
+        },
+        "summary": "credit excellent, at_fault 0"
+      },
+      "risk_score": null,
+      "recommendation": null,
+      "risk_attempts": 0,
+      "last_error": null
+    },
+    "output": {
+      "next_agent": "risk_scoring",
+      "reasoning": "next is risk_scoring"
+    },
+    "duration_ms": 0.018999911844730377,
     "tokens": {
       "input": 141,
       "output": 16,
@@ -56,20 +162,90 @@
   },
   {
     "agent": "risk_scoring",
-    "input": "APP-1001",
-    "output": "13 low",
-    "duration_ms": 0.010582967661321163,
+    "input": {
+      "applicant_id": "APP-1001",
+      "enrichment": {
+        "claims": {
+          "at_fault": 0,
+          "not_at_fault": 0,
+          "total_loss": false,
+          "dui_related": false
+        },
+        "credit": {
+          "band": "excellent"
+        },
+        "assets": {
+          "flood_zone": "X",
+          "roof_year": 2019,
+          "unpermitted_structure": false,
+          "prior_damage": false
+        },
+        "summary": "credit excellent, at_fault 0"
+      }
+    },
+    "output": {
+      "score": 13,
+      "band": "low",
+      "factors": [
+        "base",
+        "credit excellent"
+      ],
+      "hard_refer": []
+    },
+    "duration_ms": 0.017625046893954277,
     "tokens": {
       "input": 89,
-      "output": 7,
-      "total": 96
+      "output": 21,
+      "total": 110
     }
   },
   {
     "agent": "supervisor",
-    "input": "APP-1001",
-    "output": "next=recommendation",
-    "duration_ms": 0.01979200169444084,
+    "input": {
+      "status": "in_progress",
+      "profile": {
+        "complete": true,
+        "missing_fields": [],
+        "applicant_id": "APP-1001",
+        "full_name": "Alice Chen",
+        "product": "homeowners"
+      },
+      "enrichment": {
+        "claims": {
+          "at_fault": 0,
+          "not_at_fault": 0,
+          "total_loss": false,
+          "dui_related": false
+        },
+        "credit": {
+          "band": "excellent"
+        },
+        "assets": {
+          "flood_zone": "X",
+          "roof_year": 2019,
+          "unpermitted_structure": false,
+          "prior_damage": false
+        },
+        "summary": "credit excellent, at_fault 0"
+      },
+      "risk_score": {
+        "score": 13,
+        "band": "low",
+        "factors": [
+          "base",
+          "credit excellent"
+        ],
+        "hard_refer": []
+      },
+      "recommendation": null,
+      "risk_attempts": 0,
+      "last_error": null
+    },
+    "output": {
+      "next_agent": "recommendation",
+      "reasoning": "next is recommendation"
+    },
+    "duration_ms": 0.022957916371524334,
     "tokens": {
       "input": 162,
       "output": 17,
@@ -78,20 +254,73 @@
   },
   {
     "agent": "recommendation",
-    "input": "APP-1001",
-    "output": "approve",
-    "duration_ms": 0.00700005330145359,
+    "input": {
+      "score": 13,
+      "band": "low",
+      "hard_refer": [],
+      "fact_summary": "credit excellent, at_fault 0"
+    },
+    "output": {
+      "decision": "approve",
+      "rationale": "approve at 13. credit excellent, at_fault 0"
+    },
+    "duration_ms": 0.027125002816319466,
     "tokens": {
-      "input": 31,
-      "output": 7,
-      "total": 38
+      "input": 36,
+      "output": 20,
+      "total": 56
     }
   },
   {
     "agent": "supervisor",
-    "input": "APP-1001",
-    "output": "next=end",
-    "duration_ms": 0.02054101787507534,
+    "input": {
+      "status": "in_progress",
+      "profile": {
+        "complete": true,
+        "missing_fields": [],
+        "applicant_id": "APP-1001",
+        "full_name": "Alice Chen",
+        "product": "homeowners"
+      },
+      "enrichment": {
+        "claims": {
+          "at_fault": 0,
+          "not_at_fault": 0,
+          "total_loss": false,
+          "dui_related": false
+        },
+        "credit": {
+          "band": "excellent"
+        },
+        "assets": {
+          "flood_zone": "X",
+          "roof_year": 2019,
+          "unpermitted_structure": false,
+          "prior_damage": false
+        },
+        "summary": "credit excellent, at_fault 0"
+      },
+      "risk_score": {
+        "score": 13,
+        "band": "low",
+        "factors": [
+          "base",
+          "credit excellent"
+        ],
+        "hard_refer": []
+      },
+      "recommendation": {
+        "decision": "approve",
+        "rationale": "approve at 13. credit excellent, at_fault 0"
+      },
+      "risk_attempts": 0,
+      "last_error": null
+    },
+    "output": {
+      "next_agent": "end",
+      "reasoning": "next is end"
+    },
+    "duration_ms": 0.028832932002842426,
     "tokens": {
       "input": 182,
       "output": 12,

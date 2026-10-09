@@ -5,6 +5,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 
+def prompt(llm):
+    raw = getattr(llm, "last_prompt", None)
+    if not isinstance(raw, str):
+        return raw
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        return raw
+
+
 def event(agent, text_in, text_out, started, usage=None):
     usage = usage or {"input": 0, "output": 0, "total": 0}
     return {

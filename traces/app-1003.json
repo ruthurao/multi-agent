@@ -1,9 +1,20 @@
 [
   {
     "agent": "supervisor",
-    "input": "APP-1003",
-    "output": "next=intake",
-    "duration_ms": 0.009624985978007317,
+    "input": {
+      "status": "in_progress",
+      "profile": null,
+      "enrichment": null,
+      "risk_score": null,
+      "recommendation": null,
+      "risk_attempts": 0,
+      "last_error": null
+    },
+    "output": {
+      "next_agent": "intake",
+      "reasoning": "next is intake"
+    },
+    "duration_ms": 0.01570803578943014,
     "tokens": {
       "input": 46,
       "output": 13,
@@ -12,20 +23,47 @@
   },
   {
     "agent": "intake",
-    "input": "APP-1003",
-    "output": "complete",
-    "duration_ms": 0.005624955520033836,
+    "input": {
+      "applicant_id": "APP-1003",
+      "full_name": "Jordan Pike",
+      "product": "homeowners"
+    },
+    "output": {
+      "complete": true,
+      "missing_fields": [],
+      "applicant_id": "APP-1003",
+      "full_name": "Jordan Pike",
+      "product": "homeowners"
+    },
+    "duration_ms": 0.01108401920646429,
     "tokens": {
       "input": 32,
-      "output": 5,
-      "total": 37
+      "output": 30,
+      "total": 62
     }
   },
   {
     "agent": "supervisor",
-    "input": "APP-1003",
-    "output": "next=enrichment",
-    "duration_ms": 0.008541974239051342,
+    "input": {
+      "status": "in_progress",
+      "profile": {
+        "complete": true,
+        "missing_fields": [],
+        "applicant_id": "APP-1003",
+        "full_name": "Jordan Pike",
+        "product": "homeowners"
+      },
+      "enrichment": null,
+      "risk_score": null,
+      "recommendation": null,
+      "risk_attempts": 0,
+      "last_error": null
+    },
+    "output": {
+      "next_agent": "enrichment",
+      "reasoning": "next is enrichment"
+    },
+    "duration_ms": 0.012417091056704521,
     "tokens": {
       "input": 75,
       "output": 15,
@@ -34,20 +72,88 @@
   },
   {
     "agent": "enrichment",
-    "input": "APP-1003",
-    "output": "poor",
-    "duration_ms": 0.006958958692848682,
+    "input": {
+      "applicant_id": "APP-1003",
+      "claims": {
+        "at_fault": 2,
+        "not_at_fault": 0,
+        "total_loss": true,
+        "dui_related": true
+      },
+      "credit": {
+        "band": "poor"
+      },
+      "assets": {
+        "flood_zone": "AE",
+        "roof_year": 2012,
+        "unpermitted_structure": false,
+        "prior_damage": false
+      }
+    },
+    "output": {
+      "claims": {
+        "at_fault": 2,
+        "not_at_fault": 0,
+        "total_loss": true,
+        "dui_related": true
+      },
+      "credit": {
+        "band": "poor"
+      },
+      "assets": {
+        "flood_zone": "AE",
+        "roof_year": 2012,
+        "unpermitted_structure": false,
+        "prior_damage": false
+      },
+      "summary": "credit poor, at_fault 2"
+    },
+    "duration_ms": 0.014457968063652515,
     "tokens": {
       "input": 73,
-      "output": 6,
-      "total": 79
+      "output": 64,
+      "total": 137
     }
   },
   {
     "agent": "supervisor",
-    "input": "APP-1003",
-    "output": "next=risk_scoring",
-    "duration_ms": 0.01383305061608553,
+    "input": {
+      "status": "in_progress",
+      "profile": {
+        "complete": true,
+        "missing_fields": [],
+        "applicant_id": "APP-1003",
+        "full_name": "Jordan Pike",
+        "product": "homeowners"
+      },
+      "enrichment": {
+        "claims": {
+          "at_fault": 2,
+          "not_at_fault": 0,
+          "total_loss": true,
+          "dui_related": true
+        },
+        "credit": {
+          "band": "poor"
+        },
+        "assets": {
+          "flood_zone": "AE",
+          "roof_year": 2012,
+          "unpermitted_structure": false,
+          "prior_damage": false
+        },
+        "summary": "credit poor, at_fault 2"
+      },
+      "risk_score": null,
+      "recommendation": null,
+      "risk_attempts": 0,
+      "last_error": null
+    },
+    "output": {
+      "next_agent": "risk_scoring",
+      "reasoning": "next is risk_scoring"
+    },
+    "duration_ms": 0.021042069420218468,
     "tokens": {
       "input": 139,
       "output": 16,
@@ -56,20 +162,108 @@
   },
   {
     "agent": "risk_scoring",
-    "input": "APP-1003",
-    "output": "100 severe",
-    "duration_ms": 0.010083080269396305,
+    "input": {
+      "applicant_id": "APP-1003",
+      "enrichment": {
+        "claims": {
+          "at_fault": 2,
+          "not_at_fault": 0,
+          "total_loss": true,
+          "dui_related": true
+        },
+        "credit": {
+          "band": "poor"
+        },
+        "assets": {
+          "flood_zone": "AE",
+          "roof_year": 2012,
+          "unpermitted_structure": false,
+          "prior_damage": false
+        },
+        "summary": "credit poor, at_fault 2"
+      }
+    },
+    "output": {
+      "score": 100,
+      "band": "severe",
+      "factors": [
+        "base",
+        "at_fault",
+        "total_loss",
+        "dui_related",
+        "credit poor",
+        "flood"
+      ],
+      "hard_refer": [
+        "total_loss",
+        "dui_related",
+        "multiple_at_fault_claims",
+        "high_flood_zone"
+      ]
+    },
+    "duration_ms": 0.02091703936457634,
     "tokens": {
       "input": 86,
-      "output": 7,
-      "total": 93
+      "output": 52,
+      "total": 138
     }
   },
   {
     "agent": "supervisor",
-    "input": "APP-1003",
-    "output": "next=recommendation",
-    "duration_ms": 0.017499900422990322,
+    "input": {
+      "status": "in_progress",
+      "profile": {
+        "complete": true,
+        "missing_fields": [],
+        "applicant_id": "APP-1003",
+        "full_name": "Jordan Pike",
+        "product": "homeowners"
+      },
+      "enrichment": {
+        "claims": {
+          "at_fault": 2,
+          "not_at_fault": 0,
+          "total_loss": true,
+          "dui_related": true
+        },
+        "credit": {
+          "band": "poor"
+        },
+        "assets": {
+          "flood_zone": "AE",
+          "roof_year": 2012,
+          "unpermitted_structure": false,
+          "prior_damage": false
+        },
+        "summary": "credit poor, at_fault 2"
+      },
+      "risk_score": {
+        "score": 100,
+        "band": "severe",
+        "factors": [
+          "base",
+          "at_fault",
+          "total_loss",
+          "dui_related",
+          "credit poor",
+          "flood"
+        ],
+        "hard_refer": [
+          "total_loss",
+          "dui_related",
+          "multiple_at_fault_claims",
+          "high_flood_zone"
+        ]
+      },
+      "recommendation": null,
+      "risk_attempts": 0,
+      "last_error": null
+    },
+    "output": {
+      "next_agent": "recommendation",
+      "reasoning": "next is recommendation"
+    },
+    "duration_ms": 0.021957908757030964,
     "tokens": {
       "input": 190,
       "output": 17,
@@ -78,20 +272,87 @@
   },
   {
     "agent": "recommendation",
-    "input": "APP-1003",
-    "output": "deny",
-    "duration_ms": 0.005999929271638393,
+    "input": {
+      "score": 100,
+      "band": "severe",
+      "hard_refer": [
+        "total_loss",
+        "dui_related",
+        "multiple_at_fault_claims",
+        "high_flood_zone"
+      ],
+      "fact_summary": "credit poor, at_fault 2"
+    },
+    "output": {
+      "decision": "deny",
+      "rationale": "deny at 100. credit poor, at_fault 2"
+    },
+    "duration_ms": 0.013750046491622925,
     "tokens": {
-      "input": 31,
-      "output": 7,
-      "total": 38
+      "input": 54,
+      "output": 18,
+      "total": 72
     }
   },
   {
     "agent": "supervisor",
-    "input": "APP-1003",
-    "output": "next=end",
-    "duration_ms": 0.012999982573091984,
+    "input": {
+      "status": "in_progress",
+      "profile": {
+        "complete": true,
+        "missing_fields": [],
+        "applicant_id": "APP-1003",
+        "full_name": "Jordan Pike",
+        "product": "homeowners"
+      },
+      "enrichment": {
+        "claims": {
+          "at_fault": 2,
+          "not_at_fault": 0,
+          "total_loss": true,
+          "dui_related": true
+        },
+        "credit": {
+          "band": "poor"
+        },
+        "assets": {
+          "flood_zone": "AE",
+          "roof_year": 2012,
+          "unpermitted_structure": false,
+          "prior_damage": false
+        },
+        "summary": "credit poor, at_fault 2"
+      },
+      "risk_score": {
+        "score": 100,
+        "band": "severe",
+        "factors": [
+          "base",
+          "at_fault",
+          "total_loss",
+          "dui_related",
+          "credit poor",
+          "flood"
+        ],
+        "hard_refer": [
+          "total_loss",
+          "dui_related",
+          "multiple_at_fault_claims",
+          "high_flood_zone"
+        ]
+      },
+      "recommendation": {
+        "decision": "deny",
+        "rationale": "deny at 100. credit poor, at_fault 2"
+      },
+      "risk_attempts": 0,
+      "last_error": null
+    },
+    "output": {
+      "next_agent": "end",
+      "reasoning": "next is end"
+    },
+    "duration_ms": 0.016708974726498127,
     "tokens": {
       "input": 208,
       "output": 12,
