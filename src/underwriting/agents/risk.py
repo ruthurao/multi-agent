@@ -63,9 +63,12 @@ def score_facts(enrichment):
 def risk_scoring_agent(profile, enrichment, llm):
     if not enrichment:
         raise ValueError("enrichment is required")
-    llm.complete(
+    reply = llm.complete(
         "risk_scoring",
         "Score this application and reply with JSON.",
         json.dumps({"applicant_id": profile.get("applicant_id"), "enrichment": enrichment}),
     )
-    return score_facts(enrichment)
+    content = reply["content"]
+    if content != score_facts(enrichment):
+        raise ValueError("risk score does not match the rules")
+    return content

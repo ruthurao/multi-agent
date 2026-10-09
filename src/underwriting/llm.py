@@ -4,7 +4,10 @@ import os
 
 class LLM:
     def complete(self, agent, system, user):
-        if os.environ.get("ANTHROPIC_API_KEY"):
+        self.last_prompt = user
+        if os.environ.get("OLLAMA_MODEL"):
+            result = _remote("ollama", system, user)
+        elif os.environ.get("ANTHROPIC_API_KEY"):
             result = _remote("anthropic", system, user)
         elif os.environ.get("OPENAI_API_KEY"):
             result = _remote("openai", system, user)
@@ -29,10 +32,40 @@ def _pack(content, system, user, model, provider, usage=None):
 def _local(agent, system, user):
     if agent == "risk_scoring" and "APP-1004" in user:
         raise TimeoutError("risk scoring timeout")
+    payload = json.loads(user)
     if agent == "supervisor":
         from underwriting.agents.supervisor import propose
 
-        content = propose(json.loads(user))
+        content = propose(payload)
+    elif agent == "intake":
+        from underwriting.agents.intake import profile_from_raw
+
+        content = profile_from_raw(payload)
+    elif agent == "enrichment":
+        from underwriting.agents.enrichment import lookup_summary
+
+        content = {
+            "claims": payload["claims"],
+            "credit": payload["credit"],
+            "assets": payload["assets"],
+            "summary": lookup_summary(payload["claims"], payload["credit"]),
+        }
+    elif agent == "risk_scoring":
+        from underwriting.agents.risk import score_facts
+
+        content = score_facts(payload["enrichment"])
+    elif agent == "recommendation":
+        from underwriting.agents.recommendation import recommendation_for
+
+        content = recommendation_for(
+            {
+                "score": payload["score"],
+                "band": payload.get("band"),
+                "hard_refer": payload.get("hard_refer") or [],
+                "factors": ["base"],
+            },
+            payload.get("fact_summary") or "",
+        )
     else:
         content = {"reasoning": agent}
     return _pack(content, system, user, "local", "local")
@@ -46,6 +79,12 @@ def _remote(provider, system, user):
 
         model_name = os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-5")
         model = ChatAnthropic(model=model_name)
+    elif provider == "ollama":
+        from langchain_openai import ChatOpenAI
+
+        model_name = os.environ["OLLAMA_MODEL"]
+        base_url = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434/v1")
+        model = ChatOpenAI(model=model_name, base_url=base_url, api_key="ollama")
     else:
         from langchain_openai import ChatOpenAI
 
