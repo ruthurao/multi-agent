@@ -61,6 +61,24 @@ def test_wrong_score_raises():
         risk_scoring_agent(_profile("APP-1001", "Alice Chen"), ALICE, FakeLLM(bad))
 
 
+def test_high_band_includes_roof_and_unpermitted():
+    enrichment = {
+        "claims": {"at_fault": 1, "not_at_fault": 1, "total_loss": False, "dui_related": False},
+        "credit": {"band": "fair"},
+        "assets": {
+            "flood_zone": "X",
+            "roof_year": 2001,
+            "unpermitted_structure": True,
+            "prior_damage": False,
+        },
+    }
+    score = score_facts(enrichment)
+    assert score["band"] == "high"
+    assert "not_at_fault" in score["factors"]
+    assert "roof" in score["factors"]
+    assert "unpermitted" in score["factors"]
+
+
 def test_missing_enrichment_raises():
     with pytest.raises(ValueError):
         risk_scoring_agent(_profile("APP-1001", "Alice Chen"), None, LLM())

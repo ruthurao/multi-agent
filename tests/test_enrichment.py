@@ -47,6 +47,22 @@ def test_returns_model_summary():
     assert result["claims"] == found["claims"]
 
 
+def test_non_dict_reply_raises():
+    with pytest.raises(ValueError):
+        enrichment_agent(PROFILE, FakeLLM("not-json"), lookups)
+
+
+def test_blank_summary_raises():
+    found = {
+        "claims": lookups.claims("APP-1001"),
+        "credit": lookups.credit("APP-1001"),
+        "assets": lookups.assets("APP-1001"),
+        "summary": "   ",
+    }
+    with pytest.raises(ValueError):
+        enrichment_agent(PROFILE, FakeLLM(found), lookups)
+
+
 def test_changed_claims_raise():
     found = {
         "claims": {"at_fault": 9, "not_at_fault": 0, "total_loss": False, "dui_related": False},
